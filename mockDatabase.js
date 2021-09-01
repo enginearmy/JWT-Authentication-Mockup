@@ -12,6 +12,7 @@ class MockDatabase {
     }
 
     createUser = user => {
+        user.id = 1;
         this.contents.push(user);
     }
 }
