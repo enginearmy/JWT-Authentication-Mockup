@@ -1,10 +1,13 @@
+import dotEnv from 'dotenv'
 import BCrypt from 'bcrypt'
 import JWT from 'jsonwebtoken'
 
 import mockDatabase from './mockDatabase.js'
 import { goodLoginCredentials, missingUserCredentials, badPasswordCredentials } from './mockLoginCredentials.js'
 
-const simulateUserSigningUp = async() => {
+dotEnv.config();
+
+const userSignUp = async() => {
     const saltRounds = 12 
     const encryptedUser = {
         ...goodLoginCredentials,
@@ -23,13 +26,13 @@ const authenticate = async(loginPassword, user) => {
     return true;
 }
 
-const fakeClient = {
+const mockUserClientDevice = {
     token: ''
 }
 
-const userAuthenticates = async() => {
+const userAuthenticates = async(loginCredentials) => {
     const user = mockDatabase.findUser(loginCredentials.userName)
-    const isAuthentic = authenticate(loginCredentials.password, user)
+    const isAuthentic = await authenticate(loginCredentials.password, user)
 
     if( !isAuthentic) throw new Error('Authentication Failed.')
 
@@ -38,19 +41,43 @@ const userAuthenticates = async() => {
 
 const createJWT = (user) => {
     const { encryptedPassword, ...payload} = user;
-    const jwt = JWT.sign(payload)
+    const jwt = JWT.sign(payload, process.env.JWT_SECRET)
+    console.log(`TOKEN =======> ${jwt}`)
     return jwt;
 }
 
-const signUp_Authenticate_Authorize_Flow = async(loginCredentials) => {
-    await simulateUserSigningUp();
-    const user = userAuthenticates();
+const authorize = async(loginCredentials) => {
+    const user = await userAuthenticates(loginCredentials);
+    const jwt = createJWT(user);
+
+    //Simulate passing the token back to the client's device
+    mockUserClientDevice.token = jwt;
 }
 
+const attemptToAuthorize = mockUserRequest => {
+    let decodedUser
 
+    try{
+        decodedUser = JWT.verify(mockUserRequest.token, process.env.JWT_SECRET);
+        console.log(`JWT issued to ${decodedUser.userName} has been verified.`);
+    }catch(err){
+        console.error("JWT failed to authenticate.", err)
+    }
 
-signUp_Authenticate_Authorize();
+    return decodedUser;
+}
 
+const serverRequest = (mockUserClientDevice) => {
+    const authorizedUser = attemptToAuthorize(mockUserClientDevice);
+    if( !authorizedUser) throw new Error("403 ===> Accesss to the requested resource is Forbidden.  User not Authorized.")
 
-//const user = findUser(goodLoginCredentials);
-//console.log(user);
+    console.log("CONGRATS!! ===> User got the thing they wanted from the server!");
+}
+
+const signUp_Authenticate_Authorize_Request = async()=> {
+    await userSignUp();
+    await authorize(goodLoginCredentials);
+    serverRequest(mockUserClientDevice);
+}
+
+signUp_Authenticate_Authorize_Request();
