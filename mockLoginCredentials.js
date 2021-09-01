@@ -3,10 +3,6 @@ const goodLoginCredentials = {
     password: '12345678'
 }
 
-const missingUserCredentials = {
-    userName: 'person2',
-    password: '12345678'
-}
 
 const badPasswordCredentials = {
     userName: 'person1',
