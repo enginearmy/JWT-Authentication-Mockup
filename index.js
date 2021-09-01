@@ -14,8 +14,6 @@ const userSignUp = async() => {
         encryptedPassword: await BCrypt.hash(goodLoginCredentials.password, saltRounds)
     }
     mockDatabase.createUser(encryptedUser);
-
-    console.log(`Salted Password: ${encryptedUser.password}`)
 }
 
 const authenticate = async(loginPassword, user) => {
