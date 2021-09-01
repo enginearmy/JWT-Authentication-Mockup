@@ -1,4 +1,5 @@
 import BCrypt from 'bcrypt'
+import JWT from 'jsonwebtoken'
 
 import mockDatabase from './mockDatabase.js'
 import { goodLoginCredentials, missingUserCredentials, badPasswordCredentials } from './mockLoginCredentials.js'
@@ -35,10 +36,15 @@ const userAuthenticates = async() => {
     return user;
 }
 
+const createJWT = (user) => {
+    const { encryptedPassword, ...payload} = user;
+    const jwt = JWT.sign(payload)
+    return jwt;
+}
+
 const signUp_Authenticate_Authorize_Flow = async(loginCredentials) => {
     await simulateUserSigningUp();
     const user = userAuthenticates();
-    const createToken
 }
 
 
