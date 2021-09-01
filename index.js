@@ -10,7 +10,7 @@ const signUp_Authenticate_Authorize_Request = async(loginCredentials)=> {
 
     await signUpUser(goodLoginCredentials); 
     const userToken = await loginUser(loginCredentials)  //User logs in and recieves a valid JWT
-    mockServerRequest(userToken);                              //User requests the resource using the JWT as authorization
+    mockServerRequest(userToken);                        //User requests the resource using the JWT as authorization
 } 
 
 signUp_Authenticate_Authorize_Request(goodLoginCredentials); //Successful 
