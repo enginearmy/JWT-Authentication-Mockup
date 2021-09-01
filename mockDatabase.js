@@ -1,3 +1,5 @@
+//Simple mock of a database that holds the user and their password
+
 class MockDatabase {
 
     contents = []
