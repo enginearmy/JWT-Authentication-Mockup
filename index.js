@@ -22,14 +22,8 @@ const authenticate = async(loginPassword, user) => {
     return true;
 }
 
-
 const fakeClient = {
     token: ''
-}
-
-
-const signUp_Authenticate_Authorize_Flow = async(loginCredentials) => {
-    await simulateUserSigningUp();
 }
 
 const userAuthenticates = async() => {
@@ -40,6 +34,13 @@ const userAuthenticates = async() => {
 
     return user;
 }
+
+const signUp_Authenticate_Authorize_Flow = async(loginCredentials) => {
+    await simulateUserSigningUp();
+    const user = userAuthenticates();
+    const createToken
+}
+
 
 
 signUp_Authenticate_Authorize();
