@@ -12,6 +12,5 @@ const badPasswordCredentials = {
 
 export {
     goodLoginCredentials,
-    missingUserCredentials,
     badPasswordCredentials
 }
